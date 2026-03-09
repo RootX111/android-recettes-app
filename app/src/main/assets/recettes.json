@@ -1,0 +1,12 @@
+{
+  "recettes": [
+    {
+      "nom": "Salade de pomme",
+      "ingredients": "pomme, huile d’olive"
+    },
+    {
+      "nom": "Poulet Grillé",
+      "ingredients": "riz, poulet"
+    }
+  ]
+}
