@@ -222,6 +222,25 @@ then
     die "xargs is not available"
 fi
 
+# Validate JVM options to prevent command injection (CWE-77 mitigation).
+# This guards against attacks similar to CVE-2024-25082, where crafted
+# input is passed through shell interpretation (eval) to execute arbitrary
+# commands. We reject the most common injection vectors: backticks (`),
+# command substitution $(), and process substitution <().
+for _jvm_opt_val in "$DEFAULT_JVM_OPTS" "$JAVA_OPTS" "$GRADLE_OPTS"; do
+    case "$_jvm_opt_val" in
+        *\`*)
+            die "ERROR: Unsafe character (backtick) detected in JVM options. Aborting to prevent command injection."
+            ;;
+        *'$('*)
+            die "ERROR: Unsafe sequence (\$()) detected in JVM options. Aborting to prevent command injection."
+            ;;
+        *'<('*)
+            die "ERROR: Unsafe sequence (<()) detected in JVM options. Aborting to prevent command injection."
+            ;;
+    esac
+done
+
 # Use "xargs" to parse quoted args.
 #
 # With -n1 it outputs one arg per line, with the quotes and backslashes removed.
